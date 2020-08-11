@@ -3,7 +3,7 @@ import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 const { format: formatPrice } = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
-  currency: 'BRL'
+  currency: 'BRL',
 })
 
 export default class Plan extends BaseModel {
@@ -25,8 +25,8 @@ export default class Plan extends BaseModel {
   @column({
     serialize: value => ({
       formatted_value: formatPrice(value),
-      raw_value: Number(value)
-    })
+      raw_value: Number(value),
+    }),
   })
   public price: number
 

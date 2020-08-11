@@ -13,7 +13,9 @@ export default class SubscriptionsController {
   public async show({ params, auth }: HttpContextContract) {
     const { businessId } = params
 
-    if (!auth.user) return
+    if (!auth.user) {
+      return
+    }
 
     const isTeamMember = await BusinessTeamMember.query()
       .where('business_id', businessId)
@@ -32,7 +34,7 @@ export default class SubscriptionsController {
         'start_time',
         'end_time',
         'created_at',
-        'updated_at'
+        'updated_at',
       ])
       .preload('plan', plan =>
         plan.select([
@@ -43,7 +45,7 @@ export default class SubscriptionsController {
           'currency',
           'price',
           'created_at',
-          'updated_at'
+          'updated_at',
         ])
       )
       .first()
@@ -59,7 +61,9 @@ export default class SubscriptionsController {
     const { params, auth } = ctx
     const { businessId } = params
 
-    if (!auth.user) return
+    if (!auth.user) {
+      return
+    }
 
     const business = await Business.find(businessId)
 
@@ -108,7 +112,9 @@ export default class SubscriptionsController {
   public async delete({ params, auth }: HttpContextContract) {
     const { businessId } = params
 
-    if (!auth.user) return
+    if (!auth.user) {
+      return
+    }
 
     const isTeamMember = await BusinessTeamMember.query()
       .where('business_id', businessId)

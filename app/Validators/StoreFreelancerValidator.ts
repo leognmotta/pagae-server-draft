@@ -9,13 +9,13 @@ export default class StoreFreelancerValidator {
     lastName: schema.string({}, [rules.alpha({ allow: ['space'] })]),
     email: schema.string({}, [
       rules.email(),
-      rules.unique({ table: 'freelancers', column: 'email' })
+      rules.unique({ table: 'freelancers', column: 'email' }),
     ]),
     password: schema.string({}, [
       rules.minLength(8),
       rules.regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/),
-      rules.confirmed()
-    ])
+      rules.confirmed(),
+    ]),
   })
 
   public cacheKey = this.ctx.routeKey

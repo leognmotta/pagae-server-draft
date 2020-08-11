@@ -14,6 +14,6 @@ export default class UpdateSubscriptionValidator {
     await this.ctx.request.validate({
       schema: this.schema,
       cacheKey: this.cacheKey,
-      messages: this.messages
+      messages: this.messages,
     })
 }

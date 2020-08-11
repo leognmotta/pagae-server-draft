@@ -10,7 +10,9 @@ import DeleteBusinessValidator from 'App/Validators/DeleteBusinessValidator'
 
 export default class BusinessesController {
   public async index({ auth }: HttpContextContract) {
-    if (!auth.user) return
+    if (!auth.user) {
+      return
+    }
 
     const teamMembers = await BusinessTeamMember.query()
       .where('freelancer_id', auth.user.id)
@@ -31,19 +33,23 @@ export default class BusinessesController {
     const { auth } = ctx
     const { name, planId } = await new StoreBusinessValidator(ctx).validate()
 
-    if (!auth.user) return
+    if (!auth.user) {
+      return
+    }
 
     await new BusinessServices().store({
       freelancerId: auth.user.id,
       name,
-      planId
+      planId,
     })
   }
 
   public async show({ params, auth }: HttpContextContract) {
     const { id } = params
 
-    if (!auth.user) return
+    if (!auth.user) {
+      return
+    }
 
     const isTeamMember = await BusinessTeamMember.query()
       .where('business_id', id)
@@ -91,7 +97,9 @@ export default class BusinessesController {
     const { params, auth } = ctx
     const { id } = params
 
-    if (!auth.user) return
+    if (!auth.user) {
+      return
+    }
 
     const isTeamMember = await BusinessTeamMember.query()
       .where('business_id', id)

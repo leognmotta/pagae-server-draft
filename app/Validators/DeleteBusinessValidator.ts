@@ -5,7 +5,7 @@ export default class DeleteBusinessValidator {
   constructor(private ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    confirmation: schema.string()
+    confirmation: schema.string(),
   })
 
   public cacheKey = this.ctx.routeKey
@@ -16,6 +16,6 @@ export default class DeleteBusinessValidator {
     await this.ctx.request.validate({
       schema: this.schema,
       cacheKey: this.cacheKey,
-      messages: this.messages
+      messages: this.messages,
     })
 }

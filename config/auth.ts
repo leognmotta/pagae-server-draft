@@ -75,8 +75,8 @@ const authConfig: AuthConfig = {
         | The model to use for fetching or finding users
         |
         */
-        model: Freelancer
-      }
+        model: Freelancer,
+      },
     },
     /*
     |--------------------------------------------------------------------------
@@ -104,7 +104,7 @@ const authConfig: AuthConfig = {
       */
       tokenProvider: {
         driver: 'database',
-        table: 'api_tokens'
+        table: 'api_tokens',
       },
 
       provider: {
@@ -149,10 +149,10 @@ const authConfig: AuthConfig = {
         | The model to use for fetching or finding users
         |
         */
-        model: Freelancer
-      }
-    }
-  }
+        model: Freelancer,
+      },
+    },
+  },
 }
 
 export default authConfig

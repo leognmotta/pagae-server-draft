@@ -7,7 +7,7 @@ import {
   hasOne,
   HasOne,
   manyToMany,
-  ManyToMany
+  ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import Freelancer from 'App/Models/Freelancer'
 import Subscription from 'App/Models/Subscription'

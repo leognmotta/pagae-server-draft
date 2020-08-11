@@ -9,8 +9,8 @@ export default class UpdateFreelancerValidator {
     last_name: schema.string.optional({}, [rules.alpha({ allow: ['space'] })]),
     email: schema.string.optional({}, [
       rules.email(),
-      rules.unique({ table: 'auths', column: 'email' })
-    ])
+      rules.unique({ table: 'auths', column: 'email' }),
+    ]),
   })
 
   public cacheKey = this.ctx.routeKey
@@ -21,6 +21,6 @@ export default class UpdateFreelancerValidator {
     await this.ctx.request.validate({
       schema: this.schema,
       cacheKey: this.cacheKey,
-      messages: this.messages
+      messages: this.messages,
     })
 }

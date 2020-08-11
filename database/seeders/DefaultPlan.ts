@@ -9,8 +9,8 @@ export default class DefaultPlanSeeder extends BaseSeeder {
         description: 'Plano gratuito',
         name: 'trial',
         price: 0,
-        durationDays: 15
-      }
+        durationDays: 15,
+      },
     ])
   }
 }

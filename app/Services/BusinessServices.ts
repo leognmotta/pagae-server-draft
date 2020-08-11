@@ -44,12 +44,12 @@ export default class BusinessServices {
 
     const { id: businessId } = await Business.create({
       business_owner: freelancerId,
-      name
+      name,
     })
 
     await BusinessTeamMember.create({
       businessId,
-      freelancerId
+      freelancerId,
     })
 
     await Subscription.create({
@@ -57,7 +57,7 @@ export default class BusinessServices {
       planId: plan.id,
       endTime: plan.durationDays
         ? DateTime.local().plus({ days: plan.durationDays })
-        : undefined
+        : undefined,
     })
   }
 }

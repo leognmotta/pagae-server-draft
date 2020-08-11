@@ -41,10 +41,10 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
         port: Number(Env.get('DB_PORT', 5432)),
         user: Env.get('DB_USER', 'lucid') as string,
         password: Env.get('DB_PASSWORD', 'lucid') as string,
-        database: Env.get('DB_NAME', 'lucid') as string
+        database: Env.get('DB_NAME', 'lucid') as string,
       },
-      healthCheck: false
-    }
+      healthCheck: false,
+    },
   },
 
   /*
@@ -59,7 +59,7 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
   | - Or define a custom function to compute the primary key for a given model.
   |
   */
-  orm: {}
+  orm: {},
 }
 
 export default databaseConfig

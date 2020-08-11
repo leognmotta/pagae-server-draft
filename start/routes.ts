@@ -19,7 +19,7 @@ Route.resource('freelancers', 'FreelancersController')
   .middleware({
     destroy: authMiddleware,
     edit: authMiddleware,
-    update: authMiddleware
+    update: authMiddleware,
   })
   .apiOnly()
 
@@ -28,14 +28,14 @@ Route.resource('businesses/:businessId/freelancers', 'FreelancersController')
   .where('id', idPattern)
   .only(['index', 'show'])
   .middleware({
-    '*': authMiddleware
+    '*': authMiddleware,
   })
   .apiOnly()
 
 Route.resource('businesses', 'BusinessesController')
   .where('id', idPattern)
   .middleware({
-    '*': authMiddleware
+    '*': authMiddleware,
   })
   .apiOnly()
 

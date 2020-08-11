@@ -6,7 +6,7 @@ export default class StoreBusinessValidator {
 
   public schema = schema.create({
     name: schema.string(),
-    planId: schema.number.optional()
+    planId: schema.number.optional(),
   })
 
   public cacheKey = this.ctx.routeKey
@@ -17,6 +17,6 @@ export default class StoreBusinessValidator {
     await this.ctx.request.validate({
       schema: this.schema,
       cacheKey: this.cacheKey,
-      messages: this.messages
+      messages: this.messages,
     })
 }

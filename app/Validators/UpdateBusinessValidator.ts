@@ -5,7 +5,7 @@ export default class UpdateBusinessValidator {
   constructor(private ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    name: schema.string.optional()
+    name: schema.string.optional(),
   })
 
   public cacheKey = this.ctx.routeKey
@@ -16,6 +16,6 @@ export default class UpdateBusinessValidator {
     await this.ctx.request.validate({
       schema: this.schema,
       cacheKey: this.cacheKey,
-      messages: this.messages
+      messages: this.messages,
     })
 }
