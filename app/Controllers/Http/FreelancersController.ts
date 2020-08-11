@@ -7,20 +7,11 @@ import DeleteFreelancerValidator from 'App/Validators/DeleteFreelancerValidator'
 import BusinessTeamMember from 'App/Models/BusinessTeamMember'
 
 export default class FreelancersController {
-  public async index({ request, params, auth }: HttpContextContract) {
+  public async index({ request, params }: HttpContextContract) {
     const { businessId } = params
     const { page, page_size } = request.get()
 
-    if (!auth.user) {
-      return
-    }
-
-    const isTeamMember = await BusinessTeamMember.query()
-      .where('business_id', businessId)
-      .andWhere('freelancer_id', auth.user.id)
-      .first()
-
-    if (!isTeamMember) {
+    if (!request.isTeamMember) {
       throw new EntityNotFoundException()
     }
 
@@ -63,19 +54,10 @@ export default class FreelancersController {
     })
   }
 
-  public async show({ params, auth }: HttpContextContract) {
+  public async show({ params, request }: HttpContextContract) {
     const { id, businessId } = params
 
-    if (!auth.user) {
-      return
-    }
-
-    const isTeamMember = await BusinessTeamMember.query()
-      .where('business_id', businessId)
-      .andWhere('freelancer_id', auth.user.id)
-      .first()
-
-    if (!isTeamMember) {
+    if (!request.isTeamMember) {
       throw new EntityNotFoundException()
     }
 

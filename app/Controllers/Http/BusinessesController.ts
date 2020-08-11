@@ -7,11 +7,18 @@ import EntityNotFoundException from 'App/Exceptions/EntityNotFoundException'
 import UpdateBusinessValidator from 'App/Validators/UpdateBusinessValidator'
 import ForbiddenException from 'App/Exceptions/ForbiddenException'
 import DeleteBusinessValidator from 'App/Validators/DeleteBusinessValidator'
+import TeamMemberServices from 'App/Services/TeamMemberServices'
+import { AuthenticationException } from '@adonisjs/auth/build/standalone'
 
 export default class BusinessesController {
-  public async index({ auth }: HttpContextContract) {
+  public async index({ auth, request }: HttpContextContract) {
+    const { page, page_size } = request.get()
+
     if (!auth.user) {
-      return
+      throw new AuthenticationException(
+        'Unauthorized access',
+        'E_UNAUTHORIZED_ACCESS'
+      )
     }
 
     const teamMembers = await BusinessTeamMember.query()
@@ -26,14 +33,17 @@ export default class BusinessesController {
       )
       .select(['id', 'name', 'created_at', 'updated_at'])
 
-    return query.paginate(1, 15)
+    return query.paginate(Number(page) || 1, Number(page_size) || 15)
   }
 
   public async store({ auth, request }: HttpContextContract) {
     const { name, plan_id } = await request.validate(StoreBusinessValidator)
 
     if (!auth.user) {
-      return
+      throw new AuthenticationException(
+        'Unauthorized access',
+        'E_UNAUTHORIZED_ACCESS'
+      )
     }
 
     await new BusinessServices().store({
@@ -47,13 +57,13 @@ export default class BusinessesController {
     const { id } = params
 
     if (!auth.user) {
-      return
+      throw new AuthenticationException(
+        'Unauthorized access',
+        'E_UNAUTHORIZED_ACCESS'
+      )
     }
 
-    const isTeamMember = await BusinessTeamMember.query()
-      .where('business_id', id)
-      .andWhere('freelancer_id', auth.user.id)
-      .first()
+    const isTeamMember = await TeamMemberServices.isTeamMember(id, auth.user.id)
 
     if (!isTeamMember) {
       throw new EntityNotFoundException()
@@ -75,13 +85,20 @@ export default class BusinessesController {
     const { name } = await request.validate(UpdateBusinessValidator)
     const { id } = params
 
+    if (!auth.user) {
+      throw new AuthenticationException(
+        'Unauthorized access',
+        'E_UNAUTHORIZED_ACCESS'
+      )
+    }
+
     const business = await Business.find(id)
 
     if (!business) {
       throw new EntityNotFoundException()
     }
 
-    if (business.business_owner !== auth.user?.id) {
+    if (!BusinessServices.isOwner(business.business_owner, auth.user.id)) {
       throw new EntityNotFoundException()
     }
 
@@ -94,13 +111,13 @@ export default class BusinessesController {
     const { id } = params
 
     if (!auth.user) {
-      return
+      throw new AuthenticationException(
+        'Unauthorized access',
+        'E_UNAUTHORIZED_ACCESS'
+      )
     }
 
-    const isTeamMember = await BusinessTeamMember.query()
-      .where('business_id', id)
-      .andWhere('freelancer_id', auth.user.id)
-      .first()
+    const isTeamMember = await TeamMemberServices.isTeamMember(id, auth.user.id)
 
     if (!isTeamMember) {
       throw new EntityNotFoundException()
@@ -112,7 +129,7 @@ export default class BusinessesController {
       throw new EntityNotFoundException()
     }
 
-    if (business.business_owner !== auth.user?.id) {
+    if (!BusinessServices.isOwner(business.business_owner, auth.user.id)) {
       throw new ForbiddenException()
     }
 

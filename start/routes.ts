@@ -28,14 +28,14 @@ Route.resource('businesses/:businessId/freelancers', 'FreelancersController')
   .where('id', idPattern)
   .only(['index', 'show'])
   .middleware({
-    '*': authMiddleware,
+    '*': [authMiddleware, 'teamMember'],
   })
   .apiOnly()
 
 Route.resource('businesses', 'BusinessesController')
   .where('id', idPattern)
   .middleware({
-    '*': authMiddleware,
+    '*': [authMiddleware],
   })
   .apiOnly()
 
@@ -46,4 +46,12 @@ Route.group(() => {
 })
   .prefix('businesses/:businessId/')
   .where('businessId', idPattern)
-  .middleware(authMiddleware)
+  .middleware([authMiddleware, 'teamMember'])
+
+Route.resource('businesses/:businessId/clients', 'ClientsController')
+  .where('businessId', idPattern)
+  .where('id', idPattern)
+  .middleware({
+    '*': [authMiddleware, 'teamMember', 'features:clients'],
+  })
+  .apiOnly()

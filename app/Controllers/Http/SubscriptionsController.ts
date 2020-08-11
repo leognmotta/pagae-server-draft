@@ -1,5 +1,4 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import BusinessTeamMember from 'App/Models/BusinessTeamMember'
 import EntityNotFoundException from 'App/Exceptions/EntityNotFoundException'
 import Subscription from 'App/Models/Subscription'
 import UpdateSubscriptionValidator from 'App/Validators/UpdateSubscriptionValidator'
@@ -8,21 +7,13 @@ import ForbiddenException from 'App/Exceptions/ForbiddenException'
 import InvalidPlanException from 'App/Exceptions/InvalidPlanException'
 import TrialExceededException from 'App/Exceptions/TrialExceededException'
 import Plan from 'App/Models/Plan'
+import BusinessServices from 'App/Services/BusinessServices'
 
 export default class SubscriptionsController {
-  public async show({ params, auth }: HttpContextContract) {
+  public async show({ params, request }: HttpContextContract) {
     const { businessId } = params
 
-    if (!auth.user) {
-      return
-    }
-
-    const isTeamMember = await BusinessTeamMember.query()
-      .where('business_id', businessId)
-      .andWhere('freelancer_id', auth.user.id)
-      .first()
-
-    if (!isTeamMember) {
+    if (!request.isTeamMember) {
       throw new EntityNotFoundException()
     }
 
@@ -61,8 +52,8 @@ export default class SubscriptionsController {
     const { plan_id } = await request.validate(UpdateSubscriptionValidator)
     const { businessId } = params
 
-    if (!auth.user) {
-      return
+    if (!request.isTeamMember) {
+      throw new EntityNotFoundException()
     }
 
     const business = await Business.find(businessId)
@@ -71,16 +62,7 @@ export default class SubscriptionsController {
       throw new EntityNotFoundException()
     }
 
-    const isTeamMember = await BusinessTeamMember.query()
-      .where('business_id', businessId)
-      .andWhere('freelancer_id', auth.user.id)
-      .first()
-
-    if (!isTeamMember) {
-      throw new EntityNotFoundException()
-    }
-
-    if (isTeamMember && business.business_owner !== auth.user.id) {
+    if (!BusinessServices.isOwner(business.business_owner, auth.user?.id)) {
       throw new ForbiddenException()
     }
 
@@ -107,19 +89,10 @@ export default class SubscriptionsController {
     await subscription.save()
   }
 
-  public async delete({ params, auth }: HttpContextContract) {
+  public async delete({ params, auth, request }: HttpContextContract) {
     const { businessId } = params
 
-    if (!auth.user) {
-      return
-    }
-
-    const isTeamMember = await BusinessTeamMember.query()
-      .where('business_id', businessId)
-      .andWhere('freelancer_id', auth.user.id)
-      .first()
-
-    if (!isTeamMember) {
+    if (!request.isTeamMember) {
       throw new EntityNotFoundException()
     }
 
@@ -129,7 +102,7 @@ export default class SubscriptionsController {
       throw new EntityNotFoundException()
     }
 
-    if (isTeamMember && business.business_owner !== auth.user.id) {
+    if (!BusinessServices.isOwner(business.business_owner, auth.user?.id)) {
       throw new ForbiddenException()
     }
 

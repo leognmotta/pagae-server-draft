@@ -13,6 +13,13 @@ type StoreDTO = {
 }
 
 export default class BusinessServices {
+  public static isOwner(
+    ownerId: number,
+    freelancerId?: number | undefined
+  ): boolean {
+    return ownerId === freelancerId
+  }
+
   public async store({ planId, freelancerId, name }: StoreDTO) {
     const hasOtherBusiness = await Business.query()
       .where('business_owner', freelancerId)
@@ -26,7 +33,7 @@ export default class BusinessServices {
 
     if (!planId) {
       plan = await Plan.query()
-        .where('name', 'Free')
+        .where('name', 'trial')
         .andWhere('currency', 'BRL')
         .andWhere('is_active', true)
         .first()

@@ -18,6 +18,8 @@
     "@adonisjs/fold": "^6.0.0",
     "@adonisjs/lucid": "^8.2.2",
     "@adonisjs/session": "^3.0.7",
+    "date-fns": "^2.15.0",
+    "luxon": "^1.24.1",
     "pg": "^8.3.0",
     "phc-argon2": "^1.0.10",
     "proxy-addr": "^2.0.6",
