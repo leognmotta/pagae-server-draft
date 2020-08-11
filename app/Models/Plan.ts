@@ -23,7 +23,7 @@ export default class Plan extends BaseModel {
   public currency: string
 
   @column({
-    serialize: value => ({
+    serialize: (value) => ({
       formatted_value: formatPrice(value),
       raw_value: Number(value),
     }),

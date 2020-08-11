@@ -44,15 +44,23 @@ export default class FreelancersController {
   public async store(ctx: HttpContextContract) {
     const { cacheKey, messages, schema } = new StoreFreelancerValidator(ctx)
 
-    const { firstName, lastName, email, password } = await ctx.request.validate(
-      {
-        schema,
-        messages,
-        cacheKey,
-      }
-    )
+    const {
+      first_name,
+      last_name,
+      email,
+      password,
+    } = await ctx.request.validate({
+      schema,
+      messages,
+      cacheKey,
+    })
 
-    await Freelancer.create({ firstName, lastName, email, password })
+    await Freelancer.create({
+      firstName: first_name,
+      lastName: last_name,
+      email,
+      password,
+    })
   }
 
   public async show({ params, auth }: HttpContextContract) {

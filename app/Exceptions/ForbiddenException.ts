@@ -1,7 +1,7 @@
 import { Exception } from '@poppinss/utils'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class UnauthorizedException extends Exception {
+export default class ForbiddenException extends Exception {
   constructor() {
     super('Not authorized.', 403, 'E_UNAUTHORIZED')
   }

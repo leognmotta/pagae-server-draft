@@ -5,8 +5,8 @@ export default class StoreFreelancerValidator {
   constructor(private ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    firstName: schema.string({}, [rules.alpha()]),
-    lastName: schema.string({}, [rules.alpha({ allow: ['space'] })]),
+    first_name: schema.string({}, [rules.alpha()]),
+    last_name: schema.string({}, [rules.alpha({ allow: ['space'] })]),
     email: schema.string({}, [
       rules.email(),
       rules.unique({ table: 'freelancers', column: 'email' }),

@@ -5,7 +5,7 @@ import BusinessTeamMember from 'App/Models/BusinessTeamMember'
 import Business from 'App/Models/Business'
 import EntityNotFoundException from 'App/Exceptions/EntityNotFoundException'
 import UpdateBusinessValidator from 'App/Validators/UpdateBusinessValidator'
-import UnauthorizedException from 'App/Exceptions/UnauthorizedException'
+import ForbiddenException from 'App/Exceptions/ForbiddenException'
 import DeleteBusinessValidator from 'App/Validators/DeleteBusinessValidator'
 
 export default class BusinessesController {
@@ -22,7 +22,7 @@ export default class BusinessesController {
       .where('is_active', true)
       .whereIn(
         'id',
-        teamMembers.map(t => t.businessId)
+        teamMembers.map((t) => t.businessId)
       )
       .select(['id', 'name', 'created_at', 'updated_at'])
 
@@ -31,7 +31,7 @@ export default class BusinessesController {
 
   public async store(ctx: HttpContextContract) {
     const { auth } = ctx
-    const { name, planId } = await new StoreBusinessValidator(ctx).validate()
+    const { name, plan_id } = await new StoreBusinessValidator(ctx).validate()
 
     if (!auth.user) {
       return
@@ -40,7 +40,7 @@ export default class BusinessesController {
     await new BusinessServices().store({
       freelancerId: auth.user.id,
       name,
-      planId,
+      planId: plan_id,
     })
   }
 
@@ -117,7 +117,7 @@ export default class BusinessesController {
     }
 
     if (business.business_owner !== auth.user?.id) {
-      throw new UnauthorizedException()
+      throw new ForbiddenException()
     }
 
     await new DeleteBusinessValidator(ctx).validate()

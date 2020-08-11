@@ -4,7 +4,7 @@ import EntityNotFoundException from 'App/Exceptions/EntityNotFoundException'
 import Subscription from 'App/Models/Subscription'
 import UpdateSubscriptionValidator from 'App/Validators/UpdateSubscriptionValidator'
 import Business from 'App/Models/Business'
-import UnauthorizedException from 'App/Exceptions/UnauthorizedException'
+import ForbiddenException from 'App/Exceptions/ForbiddenException'
 import InvalidPlanException from 'App/Exceptions/InvalidPlanException'
 import TrialExceededException from 'App/Exceptions/TrialExceededException'
 import Plan from 'App/Models/Plan'
@@ -36,7 +36,7 @@ export default class SubscriptionsController {
         'created_at',
         'updated_at',
       ])
-      .preload('plan', plan =>
+      .preload('plan', (plan) =>
         plan.select([
           'id',
           'name',
@@ -81,7 +81,7 @@ export default class SubscriptionsController {
     }
 
     if (isTeamMember && business.business_owner !== auth.user.id) {
-      throw new UnauthorizedException()
+      throw new ForbiddenException()
     }
 
     const subscription = await Subscription.query()
@@ -92,9 +92,9 @@ export default class SubscriptionsController {
       throw new EntityNotFoundException()
     }
 
-    const { planId } = await new UpdateSubscriptionValidator(ctx).validate()
+    const { plan_id } = await new UpdateSubscriptionValidator(ctx).validate()
 
-    const plan = await Plan.find(planId)
+    const plan = await Plan.find(plan_id)
 
     if (!plan) {
       throw new InvalidPlanException()
@@ -104,7 +104,7 @@ export default class SubscriptionsController {
       throw new TrialExceededException()
     }
 
-    Object.assign(subscription, { planId })
+    Object.assign(subscription, { planId: plan_id })
 
     await subscription.save()
   }
@@ -132,7 +132,7 @@ export default class SubscriptionsController {
     }
 
     if (isTeamMember && business.business_owner !== auth.user.id) {
-      throw new UnauthorizedException()
+      throw new ForbiddenException()
     }
 
     const subscription = await Subscription.query()
