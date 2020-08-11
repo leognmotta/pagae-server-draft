@@ -6,10 +6,22 @@ export default class DefaultPlanSeeder extends BaseSeeder {
     await Plan.createMany([
       {
         currency: 'BRL',
-        description: 'Plano gratuito',
+        description: 'plano gratuito',
         name: 'trial',
         price: 0,
         durationDays: 15,
+      },
+      {
+        currency: 'BRL',
+        description: 'plano pro',
+        name: 'pro',
+        price: 45,
+      },
+      {
+        currency: 'BRL',
+        description: 'plano empresa',
+        name: 'enterprise',
+        price: 99,
       },
     ])
   }
