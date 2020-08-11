@@ -97,14 +97,11 @@ export default class FreelancersController {
     return freelancer.toJSON()
   }
 
-  public async update(ctx: HttpContextContract) {
-    const { auth, params } = ctx
+  public async update({ auth, params, request }: HttpContextContract) {
+    const { email, first_name, last_name } = await request.validate(
+      UpdateFreelancerValidator
+    )
     const { id } = params
-    const {
-      email,
-      first_name,
-      last_name,
-    } = await new UpdateFreelancerValidator(ctx).validate()
 
     if (!auth.user) {
       return
@@ -125,8 +122,7 @@ export default class FreelancersController {
     await freelancer.save()
   }
 
-  public async destroy(ctx: HttpContextContract) {
-    const { params, auth } = ctx
+  public async destroy({ params, auth, request }: HttpContextContract) {
     const { id } = params
 
     if (!auth.user) {
@@ -137,7 +133,7 @@ export default class FreelancersController {
       throw new EntityNotFoundException()
     }
 
-    await new DeleteFreelancerValidator(ctx).validate()
+    await request.validate(DeleteFreelancerValidator)
 
     const freelancer = await Freelancer.find(id)
 

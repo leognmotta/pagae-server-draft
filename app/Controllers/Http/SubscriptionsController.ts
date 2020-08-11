@@ -57,8 +57,8 @@ export default class SubscriptionsController {
     return subscription.toJSON()
   }
 
-  public async update(ctx: HttpContextContract) {
-    const { params, auth } = ctx
+  public async update({ params, auth, request }: HttpContextContract) {
+    const { plan_id } = await request.validate(UpdateSubscriptionValidator)
     const { businessId } = params
 
     if (!auth.user) {
@@ -91,8 +91,6 @@ export default class SubscriptionsController {
     if (!subscription) {
       throw new EntityNotFoundException()
     }
-
-    const { plan_id } = await new UpdateSubscriptionValidator(ctx).validate()
 
     const plan = await Plan.find(plan_id)
 

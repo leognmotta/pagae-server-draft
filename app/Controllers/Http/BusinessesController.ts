@@ -29,9 +29,8 @@ export default class BusinessesController {
     return query.paginate(1, 15)
   }
 
-  public async store(ctx: HttpContextContract) {
-    const { auth } = ctx
-    const { name, plan_id } = await new StoreBusinessValidator(ctx).validate()
+  public async store({ auth, request }: HttpContextContract) {
+    const { name, plan_id } = await request.validate(StoreBusinessValidator)
 
     if (!auth.user) {
       return
@@ -72,8 +71,8 @@ export default class BusinessesController {
     return business.toJSON()
   }
 
-  public async update(ctx: HttpContextContract) {
-    const { params, auth } = ctx
+  public async update({ params, auth, request }: HttpContextContract) {
+    const { name } = await request.validate(UpdateBusinessValidator)
     const { id } = params
 
     const business = await Business.find(id)
@@ -86,15 +85,12 @@ export default class BusinessesController {
       throw new EntityNotFoundException()
     }
 
-    const { name } = await new UpdateBusinessValidator(ctx).validate()
-
     Object.assign(business, { name })
 
     await business.save()
   }
 
-  public async destroy(ctx: HttpContextContract) {
-    const { params, auth } = ctx
+  public async destroy({ params, auth, request }: HttpContextContract) {
     const { id } = params
 
     if (!auth.user) {
@@ -120,7 +116,7 @@ export default class BusinessesController {
       throw new ForbiddenException()
     }
 
-    await new DeleteBusinessValidator(ctx).validate()
+    await request.validate(DeleteBusinessValidator)
 
     await business.delete()
   }

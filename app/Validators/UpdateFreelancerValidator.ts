@@ -16,11 +16,4 @@ export default class UpdateFreelancerValidator {
   public cacheKey = this.ctx.routeKey
 
   public messages = {}
-
-  public validate = async () =>
-    await this.ctx.request.validate({
-      schema: this.schema,
-      cacheKey: this.cacheKey,
-      messages: this.messages,
-    })
 }
