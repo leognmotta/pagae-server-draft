@@ -7,7 +7,6 @@ import EntityNotFoundException from 'App/Exceptions/EntityNotFoundException'
 import UpdateBusinessValidator from 'App/Validators/UpdateBusinessValidator'
 import ForbiddenException from 'App/Exceptions/ForbiddenException'
 import DeleteBusinessValidator from 'App/Validators/DeleteBusinessValidator'
-import TeamMemberServices from 'App/Services/TeamMemberServices'
 import { AuthenticationException } from '@adonisjs/auth/build/standalone'
 
 export default class BusinessesController {
@@ -53,19 +52,10 @@ export default class BusinessesController {
     })
   }
 
-  public async show({ params, auth }: HttpContextContract) {
+  public async show({ params, request }: HttpContextContract) {
     const { id } = params
 
-    if (!auth.user) {
-      throw new AuthenticationException(
-        'Unauthorized access',
-        'E_UNAUTHORIZED_ACCESS'
-      )
-    }
-
-    const isTeamMember = await TeamMemberServices.isTeamMember(id, auth.user.id)
-
-    if (!isTeamMember) {
+    if (Number(id) !== request.activeBusiness) {
       throw new EntityNotFoundException()
     }
 
@@ -117,9 +107,7 @@ export default class BusinessesController {
       )
     }
 
-    const isTeamMember = await TeamMemberServices.isTeamMember(id, auth.user.id)
-
-    if (!isTeamMember) {
+    if (id !== request.activeBusiness) {
       throw new EntityNotFoundException()
     }
 

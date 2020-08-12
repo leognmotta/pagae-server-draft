@@ -3,19 +3,18 @@ import StoreClientValidator from 'App/Validators/StoreClientValidator'
 import UpdateClientValidator from 'App/Validators/UpdateClientValidator'
 import Client from 'App/Models/Client'
 import EntityNotFoundException from 'App/Exceptions/EntityNotFoundException'
-import PlanFeatureLimitException from 'App/Exceptions/PlanFeatureLimitException'
+import NoBusinessActiveException from 'App/Exceptions/NoBusinessActiveException'
 
 export default class ClientsController {
-  public async index({ params, request }: HttpContextContract) {
-    const { businessId } = params
+  public async index({ request }: HttpContextContract) {
     const { page, page_size } = request.get()
 
-    if (!request.isTeamMember) {
-      throw new EntityNotFoundException()
+    if (!request.activeBusiness) {
+      throw new NoBusinessActiveException()
     }
 
     const clients = Client.query()
-      .where('business_id', businessId)
+      .where('business_id', request.activeBusiness)
       .preload('address')
       .preload('contacts')
       .preload('tax')
@@ -23,25 +22,27 @@ export default class ClientsController {
     return await clients.paginate(Number(page) || 1, Number(page_size) || 15)
   }
 
-  public async store({ request, params }: HttpContextContract) {
-    const { businessId } = params
+  public async store({ request }: HttpContextContract) {
     const { name, address, tax, contacts } = await request.validate(
       StoreClientValidator
     )
 
-    if (!request.isTeamMember) {
-      throw new EntityNotFoundException()
+    if (!request.activeBusiness) {
+      throw new NoBusinessActiveException()
     }
 
-    if (!request.canCreateEntity) {
-      throw new PlanFeatureLimitException('clients')
+    const client = await Client.create({
+      businessId: request.activeBusiness,
+      name,
+    })
+
+    if (address) {
+      await client.related('address').create(address)
     }
 
-    const client = await Client.create({ businessId, name })
-
-    await client.related('address').create(address || {})
-
-    await client.related('tax').create(tax || {})
+    if (tax) {
+      await client.related('tax').create(tax)
+    }
 
     if (contacts) {
       await client.related('contacts').createMany(contacts)
@@ -49,15 +50,15 @@ export default class ClientsController {
   }
 
   public async show({ params, request }: HttpContextContract) {
-    const { businessId, id } = params
+    const { id } = params
 
-    if (!request.isTeamMember) {
-      throw new EntityNotFoundException()
+    if (!request.activeBusiness) {
+      throw new NoBusinessActiveException()
     }
 
     const client = await Client.query()
       .where('id', id)
-      .andWhere('business_id', businessId)
+      .andWhere('business_id', request.activeBusiness)
       .preload('address')
       .preload('contacts')
       .preload('tax')
@@ -71,43 +72,50 @@ export default class ClientsController {
   }
 
   public async update({ params, request }: HttpContextContract) {
-    const { businessId, id } = params
+    const { id } = params
     const { name, address, tax, contacts } = await request.validate(
       UpdateClientValidator
     )
 
-    if (!request.isTeamMember) {
-      throw new EntityNotFoundException()
+    if (!request.activeBusiness) {
+      throw new NoBusinessActiveException()
     }
 
     const client = await Client.query()
       .where('id', id)
-      .andWhere('business_id', businessId)
+      .andWhere('business_id', request.activeBusiness)
       .first()
 
     if (!client) {
       throw new EntityNotFoundException()
     }
 
-    Object.assign(client, { name })
-
     if (address) {
       const addressInstance = await client
         .related('address')
         .query()
-        .andWhere('client_id', client.id)
+        .where('client_id', client.id)
         .first()
 
-      if (!addressInstance) {
+      if (addressInstance && addressInstance.id !== address.id) {
         throw new EntityNotFoundException()
       }
 
-      Object.assign(addressInstance, {
-        postalCode: address.postal_code,
-        ...address,
-      })
+      if (!addressInstance) {
+        delete address.id
 
-      await addressInstance.save()
+        await client.related('address').create({
+          postalCode: address.postal_code,
+          ...address,
+        })
+      } else {
+        Object.assign(addressInstance, {
+          postalCode: address.postal_code,
+          ...address,
+        })
+
+        await addressInstance.save()
+      }
     }
 
     if (tax) {
@@ -117,36 +125,55 @@ export default class ClientsController {
         .andWhere('client_id', client.id)
         .first()
 
-      if (!taxInstance) {
+      if (taxInstance && taxInstance.id !== tax.id) {
         throw new EntityNotFoundException()
       }
 
-      Object.assign(taxInstance, { ...tax })
+      if (!taxInstance) {
+        delete tax.id
 
-      await taxInstance.save()
+        await client.related('tax').create({ ...tax })
+      } else {
+        Object.assign(taxInstance, { ...tax })
+
+        await taxInstance.save()
+      }
     }
 
     if (contacts) {
-      contacts.forEach(async (contact) => {
-        await client
+      contacts.forEach(async ({ id: contactId, email, name, phone, role }) => {
+        const instance = await client
           .related('contacts')
-          .updateOrCreate({ id: contact.id }, contact)
+          .query()
+          .where('id', contactId)
+          .andWhere('client_id', id)
+          .first()
+
+        if (!instance) {
+          await client.related('contacts').create({ email, name, phone, role })
+        } else {
+          Object.assign(instance, { email, name, phone, role })
+
+          await instance.save()
+        }
       })
     }
+
+    Object.assign(client, { name })
 
     await client.save()
   }
 
   public async destroy({ params, request }: HttpContextContract) {
-    const { businessId, id } = params
+    const { id } = params
 
-    if (!request.isTeamMember) {
-      throw new EntityNotFoundException()
+    if (!request.activeBusiness) {
+      throw new NoBusinessActiveException()
     }
 
     const client = await Client.query()
       .where('id', id)
-      .andWhere('business_id', businessId)
+      .andWhere('business_id', request.activeBusiness)
       .first()
 
     if (!client) {

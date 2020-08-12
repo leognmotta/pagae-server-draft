@@ -2,19 +2,10 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 export default class UpdateClientValidator {
-  constructor(private ctx: HttpContextContract) {}
-
   public schema = schema.create({
     name: schema.string.optional(),
     address: schema.object.optional().members({
-      id: schema.number([
-        rules.range(1, 9999999999),
-        rules.exists({
-          table: 'addresses',
-          column: 'id',
-          where: { client_id: this.ctx.params.id },
-        }),
-      ]),
+      id: schema.number([rules.range(1, 9999999999)]),
       street: schema.string.optional(),
       unit: schema.string.optional(),
       city: schema.string.optional(),
@@ -34,21 +25,13 @@ export default class UpdateClientValidator {
       })
     ),
     tax: schema.object.optional().members({
-      id: schema.number([
-        rules.range(1, 9999999999),
-        rules.exists({
-          table: 'taxes',
-          column: 'id',
-          where: { client_id: this.ctx.params.id },
-        }),
-      ]),
+      id: schema.number([rules.range(1, 9999999999)]),
       label: schema.string.optional(),
       value: schema.string.optional(),
     }),
   })
 
   public messages = {
-    exists: '{{ field }} does not exists.',
     range: '{{ field }} should have max length of 10 and starts as 1',
   }
 }

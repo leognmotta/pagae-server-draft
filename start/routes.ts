@@ -15,27 +15,19 @@ Route.post('/logout', 'AuthController.logout')
 
 Route.resource('freelancers', 'FreelancersController')
   .where('id', idPattern)
-  .except(['index', 'show'])
   .middleware({
-    destroy: authMiddleware,
-    edit: authMiddleware,
-    update: authMiddleware,
-  })
-  .apiOnly()
-
-Route.resource('businesses/:businessId/freelancers', 'FreelancersController')
-  .where('businessId', idPattern)
-  .where('id', idPattern)
-  .only(['index', 'show'])
-  .middleware({
-    '*': [authMiddleware, 'teamMember'],
+    destroy: [authMiddleware, 'sentinel'],
+    edit: [authMiddleware, 'sentinel'],
+    update: [authMiddleware, 'sentinel'],
+    index: [authMiddleware, 'sentinel'],
+    show: [authMiddleware, 'sentinel'],
   })
   .apiOnly()
 
 Route.resource('businesses', 'BusinessesController')
   .where('id', idPattern)
   .middleware({
-    '*': [authMiddleware],
+    '*': [authMiddleware, 'sentinel'],
   })
   .apiOnly()
 
@@ -44,14 +36,12 @@ Route.group(() => {
   Route.patch('subscriptions', 'SubscriptionsController.update')
   Route.delete('subscriptions', 'SubscriptionsController.delete')
 })
-  .prefix('businesses/:businessId/')
   .where('businessId', idPattern)
-  .middleware([authMiddleware, 'teamMember'])
+  .middleware([authMiddleware, 'sentinel'])
 
-Route.resource('businesses/:businessId/clients', 'ClientsController')
-  .where('businessId', idPattern)
+Route.resource('clients', 'ClientsController')
   .where('id', idPattern)
   .middleware({
-    '*': [authMiddleware, 'teamMember', 'features:clients'],
+    '*': [authMiddleware, 'sentinel'],
   })
   .apiOnly()

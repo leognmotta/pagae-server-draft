@@ -10,15 +10,13 @@ import Plan from 'App/Models/Plan'
 import BusinessServices from 'App/Services/BusinessServices'
 
 export default class SubscriptionsController {
-  public async show({ params, request }: HttpContextContract) {
-    const { businessId } = params
-
-    if (!request.isTeamMember) {
+  public async show({ request }: HttpContextContract) {
+    if (!request.activeBusiness) {
       throw new EntityNotFoundException()
     }
 
     const subscription = await Subscription.query()
-      .where('business_id', businessId)
+      .where('business_id', request.activeBusiness)
       .select([
         'id',
         'plan_id',
@@ -48,15 +46,14 @@ export default class SubscriptionsController {
     return subscription.toJSON()
   }
 
-  public async update({ params, auth, request }: HttpContextContract) {
+  public async update({ auth, request }: HttpContextContract) {
     const { plan_id } = await request.validate(UpdateSubscriptionValidator)
-    const { businessId } = params
 
-    if (!request.isTeamMember) {
+    if (!request.activeBusiness || !auth.user) {
       throw new EntityNotFoundException()
     }
 
-    const business = await Business.find(businessId)
+    const business = await Business.find(request.activeBusiness)
 
     if (!business) {
       throw new EntityNotFoundException()
@@ -64,14 +61,6 @@ export default class SubscriptionsController {
 
     if (!BusinessServices.isOwner(business.business_owner, auth.user?.id)) {
       throw new ForbiddenException()
-    }
-
-    const subscription = await Subscription.query()
-      .where('business_id', businessId)
-      .first()
-
-    if (!subscription) {
-      throw new EntityNotFoundException()
     }
 
     const plan = await Plan.find(plan_id)
@@ -80,23 +69,34 @@ export default class SubscriptionsController {
       throw new InvalidPlanException()
     }
 
-    if (plan.name.toLowerCase() === 'trial') {
+    const userBusiness = await Business.query()
+      .where('business_owner', auth.user.id)
+      .select('*')
+
+    const ohterBusinessWithSubscription = await Subscription.query().whereIn(
+      'id',
+      (userBusiness || []).map((b) => b.id)
+    )
+
+    if (
+      ohterBusinessWithSubscription.length > 0 &&
+      plan.name.toLowerCase() === 'trial'
+    ) {
       throw new TrialExceededException()
     }
 
-    Object.assign(subscription, { planId: plan_id })
-
-    await subscription.save()
+    await Subscription.updateOrCreate(
+      { businessId: request.activeBusiness },
+      { businessId: request.activeBusiness, planId: plan.id }
+    )
   }
 
-  public async delete({ params, auth, request }: HttpContextContract) {
-    const { businessId } = params
-
-    if (!request.isTeamMember) {
+  public async delete({ auth, request }: HttpContextContract) {
+    if (!request.activeBusiness) {
       throw new EntityNotFoundException()
     }
 
-    const business = await Business.find(businessId)
+    const business = await Business.find(request.activeBusiness)
 
     if (!business) {
       throw new EntityNotFoundException()
@@ -107,7 +107,7 @@ export default class SubscriptionsController {
     }
 
     const subscription = await Subscription.query()
-      .where('business_id', businessId)
+      .where('business_id', request.activeBusiness)
       .first()
 
     if (!subscription) {

@@ -7,16 +7,15 @@ import DeleteFreelancerValidator from 'App/Validators/DeleteFreelancerValidator'
 import BusinessTeamMember from 'App/Models/BusinessTeamMember'
 
 export default class FreelancersController {
-  public async index({ request, params }: HttpContextContract) {
-    const { businessId } = params
+  public async index({ request }: HttpContextContract) {
     const { page, page_size } = request.get()
 
-    if (!request.isTeamMember) {
+    if (!request.activeBusiness) {
       throw new EntityNotFoundException()
     }
 
     const teamMembers = await BusinessTeamMember.query()
-      .where('business_id', businessId)
+      .where('business_id', request.activeBusiness)
       .select(['freelancer_id'])
 
     const freelancers = Freelancer.query()
@@ -32,19 +31,10 @@ export default class FreelancersController {
     )
   }
 
-  public async store(ctx: HttpContextContract) {
-    const { cacheKey, messages, schema } = new StoreFreelancerValidator(ctx)
-
-    const {
-      first_name,
-      last_name,
-      email,
-      password,
-    } = await ctx.request.validate({
-      schema,
-      messages,
-      cacheKey,
-    })
+  public async store({ request }: HttpContextContract) {
+    const { first_name, last_name, email, password } = await request.validate(
+      StoreFreelancerValidator
+    )
 
     await Freelancer.create({
       firstName: first_name,
@@ -55,14 +45,14 @@ export default class FreelancersController {
   }
 
   public async show({ params, request }: HttpContextContract) {
-    const { id, businessId } = params
+    const { id } = params
 
-    if (!request.isTeamMember) {
+    if (!request.activeBusiness) {
       throw new EntityNotFoundException()
     }
 
     const isPartOfTeam = await BusinessTeamMember.query()
-      .where('business_id', businessId)
+      .where('business_id', request.activeBusiness)
       .andWhere('freelancer_id', id)
       .first()
 
@@ -80,16 +70,12 @@ export default class FreelancersController {
   }
 
   public async update({ auth, params, request }: HttpContextContract) {
+    const { id } = params
     const { email, first_name, last_name } = await request.validate(
       UpdateFreelancerValidator
     )
-    const { id } = params
 
-    if (!auth.user) {
-      return
-    }
-
-    if (auth.user.id !== Number(id)) {
+    if (auth.user && auth.user.id !== Number(id)) {
       throw new EntityNotFoundException()
     }
 
@@ -107,11 +93,7 @@ export default class FreelancersController {
   public async destroy({ params, auth, request }: HttpContextContract) {
     const { id } = params
 
-    if (!auth.user) {
-      return
-    }
-
-    if (auth.user.id !== Number(id)) {
+    if (auth.user && auth.user.id !== Number(id)) {
       throw new EntityNotFoundException()
     }
 
