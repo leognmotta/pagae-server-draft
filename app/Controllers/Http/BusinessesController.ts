@@ -8,6 +8,7 @@ import UpdateBusinessValidator from 'App/Validators/UpdateBusinessValidator'
 import ForbiddenException from 'App/Exceptions/ForbiddenException'
 import DeleteBusinessValidator from 'App/Validators/DeleteBusinessValidator'
 import { AuthenticationException } from '@adonisjs/auth/build/standalone'
+import { BUSINESS_ID_COOKIE_KEY } from 'App/Utils/Constants/cookies'
 
 export default class BusinessesController {
   public async index({ auth, request }: HttpContextContract) {
@@ -97,7 +98,12 @@ export default class BusinessesController {
     await business.save()
   }
 
-  public async destroy({ params, auth, request }: HttpContextContract) {
+  public async destroy({
+    params,
+    auth,
+    request,
+    response,
+  }: HttpContextContract) {
     const { id } = params
 
     if (!auth.user) {
@@ -124,5 +130,7 @@ export default class BusinessesController {
     await request.validate(DeleteBusinessValidator)
 
     await business.delete()
+
+    response.cookie(BUSINESS_ID_COOKIE_KEY, '', { httpOnly: false })
   }
 }

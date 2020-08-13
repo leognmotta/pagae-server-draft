@@ -8,8 +8,7 @@ import NoBusinessToSelectException from 'App/Exceptions/NoBusinessToSelectExcept
 import EntityNotFoundException from 'App/Exceptions/EntityNotFoundException'
 import Client from 'App/Models/Client'
 import Project from 'App/Models/Project'
-
-const businessIdCookieKey = 'active-business'
+import { BUSINESS_ID_COOKIE_KEY } from 'App/Utils/Constants/cookies'
 
 class WithBusinessFk extends BaseModel {
   @column()
@@ -60,7 +59,7 @@ export default class Sentinel {
       )
     }
 
-    const activeBusiness = request.cookie(businessIdCookieKey)
+    const activeBusiness = request.cookie(BUSINESS_ID_COOKIE_KEY)
     const url = request.url()
     const topLevelEntityKey = this.getTopLevelEntity(url)
     const topLevelEntityId = this.getTopLevelId(url)
@@ -98,7 +97,7 @@ export default class Sentinel {
 
       request.activeBusiness = entity.businessId
 
-      response.cookie(businessIdCookieKey, entity.businessId, {
+      response.cookie(BUSINESS_ID_COOKIE_KEY, entity.businessId, {
         httpOnly: false,
       })
     } else {
@@ -108,7 +107,7 @@ export default class Sentinel {
 
       request.activeBusiness = allowedBusiness[0]
 
-      response.cookie(businessIdCookieKey, allowedBusiness[0], {
+      response.cookie(BUSINESS_ID_COOKIE_KEY, allowedBusiness[0], {
         httpOnly: false,
       })
     }
