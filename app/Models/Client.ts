@@ -10,6 +10,7 @@ import {
 import Address from 'App/Models/Address'
 import Tax from 'App/Models/Tax'
 import Contact from 'App/Models/Contact'
+import Project from './Project'
 
 export default class Client extends BaseModel {
   @column({ isPrimary: true })
@@ -29,6 +30,12 @@ export default class Client extends BaseModel {
 
   @hasMany(() => Contact)
   public contacts: HasMany<typeof Contact>
+
+  @hasMany(() => Project)
+  public projects: HasMany<typeof Project>
+
+  @column()
+  public isActive: boolean
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

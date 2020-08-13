@@ -17,9 +17,7 @@
     "./start/kernel",
     {
       "file": "./start/validationRules",
-      "environment": [
-        "web"
-      ]
+      "environment": ["web"]
     }
   ],
   "providers": [
@@ -29,8 +27,5 @@
     "@adonisjs/auth",
     "@adonisjs/session"
   ],
-  "metaFiles": [
-    ".env",
-    ".adonisrc.json"
-  ]
+  "metaFiles": [".env", ".adonisrc.json"]
 }

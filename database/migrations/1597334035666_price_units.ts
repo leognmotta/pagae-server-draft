@@ -1,7 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class BusinessTeamMembers extends BaseSchema {
-  protected tableName = 'business_team_members'
+export default class PriceUnits extends BaseSchema {
+  protected tableName = 'price_units'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
@@ -12,14 +12,8 @@ export default class BusinessTeamMembers extends BaseSchema {
         .inTable('businesses')
         .unsigned()
         .onDelete('CASCADE')
-        .notNullable()
-      table
-        .integer('freelancer_id')
-        .references('id')
-        .inTable('freelancers')
-        .unsigned()
-        .onDelete('CASCADE')
-        .notNullable()
+        .nullable()
+      table.string('name').notNullable()
       table.timestamps(true)
     })
   }

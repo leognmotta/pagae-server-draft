@@ -3,10 +3,11 @@ import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import { AuthenticationException } from '@adonisjs/auth/build/standalone'
 import Subscription from 'App/Models/Subscription'
 import BusinessTeamMember from 'App/Models/BusinessTeamMember'
-import Client from 'App/Models/Client'
 import PlanFeatureLimitException from 'App/Exceptions/PlanFeatureLimitException'
 import NoBusinessToSelectException from 'App/Exceptions/NoBusinessToSelectException'
 import EntityNotFoundException from 'App/Exceptions/EntityNotFoundException'
+import Client from 'App/Models/Client'
+import Project from 'App/Models/Project'
 
 const businessIdCookieKey = 'active-business'
 
@@ -22,6 +23,7 @@ type EntitiesObject = {
 export default class Sentinel {
   private topLevelEntityWithBusinessFK: EntitiesObject = {
     clients: Client,
+    projects: Project,
   }
 
   private getTopLevelId(url: string): number | null {
@@ -120,7 +122,8 @@ export default class Sentinel {
       method === 'POST' &&
       !topLevelEntityId &&
       hasFKwithBusiness &&
-      request.activeBusiness
+      request.activeBusiness &&
+      topLevelEntityKey.toLowerCase() === 'clients'
     ) {
       const subscription = await Subscription.query()
         .where('business_id', request.activeBusiness)
