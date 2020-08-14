@@ -10,7 +10,7 @@ export default class InvoiceReminder extends BaseModel {
   public projectId: number
 
   @column()
-  public billingCycleTypeId: number
+  public billingCycleType: number
 
   @hasMany(() => InvoiceReminderCustomDate)
   public invoiceRemindersCustomDates: HasMany<typeof InvoiceReminderCustomDate>
@@ -20,6 +20,9 @@ export default class InvoiceReminder extends BaseModel {
 
   @column.dateTime()
   public lastInvoiceReminder: DateTime
+
+  @column.dateTime()
+  public nextInvoiceReminder: DateTime
 
   @column()
   public invoiceReminderEnabled: boolean

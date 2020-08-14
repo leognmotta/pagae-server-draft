@@ -14,9 +14,9 @@ export default class Services extends BaseSchema {
         .onDelete('CASCADE')
         .nullable()
       table.string('name').notNullable()
-      table.string('description').notNullable()
-      table.integer('price').notNullable()
-      table.integer('quantity').nullable()
+      table.string('description').nullable()
+      table.float('price').unsigned().notNullable()
+      table.float('quantity').unsigned().nullable()
       table
         .integer('price_unit_id')
         .references('id')

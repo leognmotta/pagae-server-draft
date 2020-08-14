@@ -20,7 +20,7 @@ export default class Business extends BaseModel {
   public name: string
 
   @column()
-  public business_owner: number
+  public businessOwner: number
 
   @hasOne(() => Subscription)
   public subscription: HasOne<typeof Subscription>

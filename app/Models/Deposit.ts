@@ -7,7 +7,7 @@ export default class Deposit extends BaseModel {
   public id: number
 
   @column()
-  public name: string
+  public value: number
 
   @column()
   public required: boolean

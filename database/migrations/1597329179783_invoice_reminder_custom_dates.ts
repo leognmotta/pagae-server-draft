@@ -13,7 +13,8 @@ export default class InvoiceReminderCustomDates extends BaseSchema {
         .unsigned()
         .onDelete('CASCADE')
         .notNullable()
-      table.date('date').notNullable()
+      table.string('milestone').nullable
+      table.dateTime('date', { useTz: true }).notNullable()
       table.timestamps(true)
     })
   }

@@ -89,7 +89,7 @@ export default class BusinessesController {
       throw new EntityNotFoundException()
     }
 
-    if (!BusinessServices.isOwner(business.business_owner, auth.user.id)) {
+    if (!BusinessServices.isOwner(business.businessOwner, auth.user.id)) {
       throw new EntityNotFoundException()
     }
 
@@ -123,7 +123,7 @@ export default class BusinessesController {
       throw new EntityNotFoundException()
     }
 
-    if (!BusinessServices.isOwner(business.business_owner, auth.user.id)) {
+    if (!BusinessServices.isOwner(business.businessOwner, auth.user.id)) {
       throw new ForbiddenException()
     }
 

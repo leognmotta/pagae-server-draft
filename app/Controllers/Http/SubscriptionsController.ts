@@ -59,7 +59,7 @@ export default class SubscriptionsController {
       throw new EntityNotFoundException()
     }
 
-    if (!BusinessServices.isOwner(business.business_owner, auth.user?.id)) {
+    if (!BusinessServices.isOwner(business.businessOwner, auth.user?.id)) {
       throw new ForbiddenException()
     }
 
@@ -102,7 +102,7 @@ export default class SubscriptionsController {
       throw new EntityNotFoundException()
     }
 
-    if (!BusinessServices.isOwner(business.business_owner, auth.user?.id)) {
+    if (!BusinessServices.isOwner(business.businessOwner, auth.user?.id)) {
       throw new ForbiddenException()
     }
 

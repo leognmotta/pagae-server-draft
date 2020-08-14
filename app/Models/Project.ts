@@ -8,6 +8,7 @@ import {
   HasOne,
   hasMany,
   HasMany,
+  computed,
 } from '@ioc:Adonis/Lucid/Orm'
 import Client from './Client'
 import InvoiceReminder from './InvoiceReminder'
@@ -27,6 +28,27 @@ export default class Project extends BaseModel {
   @column()
   public businessId: number
 
+  @computed()
+  public get balance() {
+    if (!this.services) {
+      return {}
+    }
+
+    return {
+      total: Number(
+        this.services
+          .reduce((a, { price, priceUnitId, quantity }) => {
+            if (priceUnitId === 1) {
+              return a + price
+            }
+
+            return a + price * quantity
+          }, 0)
+          .toFixed(2)
+      ),
+    }
+  }
+
   @hasOne(() => InvoiceReminder)
   public reminder: HasOne<typeof InvoiceReminder>
 
@@ -43,7 +65,7 @@ export default class Project extends BaseModel {
   public client: BelongsTo<typeof Client>
 
   @column()
-  public statusId: number
+  public status: number
 
   @column.dateTime()
   public startTime: DateTime

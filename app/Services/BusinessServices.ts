@@ -50,7 +50,7 @@ export default class BusinessServices {
     }
 
     const { id: businessId } = await Business.create({
-      business_owner: freelancerId,
+      businessOwner: freelancerId,
       name,
     })
 

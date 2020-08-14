@@ -5,6 +5,15 @@ export default class InvoiceReminderCustomDate extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
+  @column()
+  public invoiceReminderId: number
+
+  @column()
+  public milestone: string
+
+  @column.dateTime()
+  public date: DateTime
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

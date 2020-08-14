@@ -27,7 +27,11 @@ Route.resource('freelancers', 'FreelancersController')
 Route.resource('businesses', 'BusinessesController')
   .where('id', idPattern)
   .middleware({
-    '*': [authMiddleware, 'sentinel'],
+    '*': [authMiddleware],
+    destroy: 'sentinel',
+    index: 'sentinel',
+    show: 'sentinel',
+    update: 'sentinel',
   })
   .apiOnly()
 
@@ -40,6 +44,13 @@ Route.group(() => {
   .middleware([authMiddleware, 'sentinel'])
 
 Route.resource('clients', 'ClientsController')
+  .where('id', idPattern)
+  .middleware({
+    '*': [authMiddleware, 'sentinel'],
+  })
+  .apiOnly()
+
+Route.resource('projects', 'ProjectsController')
   .where('id', idPattern)
   .middleware({
     '*': [authMiddleware, 'sentinel'],
