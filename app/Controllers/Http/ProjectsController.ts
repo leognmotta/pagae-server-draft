@@ -21,9 +21,9 @@ export default class ProjectsController {
 
     const project = await Project.query()
       .where('business_id', request.activeBusiness)
-      // .preload('client')
-      // .preload('deposit')
-      // .preload('reminder', (r) => r.preload('invoiceRemindersCustomDates'))
+      .preload('client')
+      .preload('deposit')
+      .preload('reminder', (r) => r.preload('invoiceRemindersCustomDates'))
       .preload('services')
       .paginate(Number(page) || 1, Number(page_size) || 15)
 
@@ -33,26 +33,26 @@ export default class ProjectsController {
   public async store({ request }: HttpContextContract) {
     const {
       name,
-      client_id,
+      clientId,
       currency,
-      start_time,
-      end_time,
+      startTime,
+      endTime,
       deposit,
-      invoice_reminder,
+      invoiceReminder,
       services,
     } = await request.validate(StoreProjectValidator)
 
     const project = await Project.create({
       name,
-      clientId: client_id,
+      clientId,
       businessId: request.activeBusiness,
       status:
-        start_time && isBefore(new Date(start_time.toString()), new Date())
+        startTime && isBefore(new Date(startTime.toString()), new Date())
           ? ProjectStatuses.RUNNING
           : ProjectStatuses.UPCOMING,
       currency: currency || CurrencyCode.BRL,
-      startTime: start_time,
-      endTime: end_time,
+      startTime,
+      endTime,
     })
 
     if (deposit) {
@@ -65,48 +65,48 @@ export default class ProjectsController {
       await project.related('services').createMany(services)
     }
 
-    if (invoice_reminder) {
+    if (invoiceReminder) {
       const {
-        billing_cycle_type,
-        first_invoice_reminder,
-        last_invoice_reminder,
-        custom_dates,
-      } = invoice_reminder
+        billingCycleType,
+        firstInvoiceReminder,
+        lastInvoiceReminder,
+        customDates,
+      } = invoiceReminder
 
       let nextReminder: DateTime | undefined
       let firstReminder: DateTime | undefined
 
       if (
-        billing_cycle_type !== BillingCycleTypes.MILESTONE &&
-        billing_cycle_type !== BillingCycleTypes.CUSTOM
+        billingCycleType !== BillingCycleTypes.MILESTONE &&
+        billingCycleType !== BillingCycleTypes.CUSTOM
       ) {
-        firstReminder = first_invoice_reminder
+        firstReminder = firstInvoiceReminder
       }
 
-      if (billing_cycle_type === BillingCycleTypes.WEEKLY) {
-        nextReminder = first_invoice_reminder?.plus({ days: 7 })
+      if (billingCycleType === BillingCycleTypes.WEEKLY) {
+        nextReminder = firstInvoiceReminder?.plus({ days: 7 })
       }
 
-      if (billing_cycle_type === BillingCycleTypes.MONTHLY) {
-        nextReminder = first_invoice_reminder?.plus({ month: 1 })
+      if (billingCycleType === BillingCycleTypes.MONTHLY) {
+        nextReminder = firstInvoiceReminder?.plus({ month: 1 })
       }
 
       const reminder = await project.related('reminder').create({
-        billingCycleType: billing_cycle_type,
+        billingCycleType,
         firstInvoiceReminder: firstReminder,
-        lastInvoiceReminder: firstReminder ? last_invoice_reminder : undefined,
+        lastInvoiceReminder: firstReminder ? lastInvoiceReminder : undefined,
         nextInvoiceReminder: nextReminder,
       })
 
       if (
-        custom_dates &&
-        (billing_cycle_type === BillingCycleTypes.CUSTOM ||
-          billing_cycle_type === BillingCycleTypes.MILESTONE)
+        customDates &&
+        (billingCycleType === BillingCycleTypes.CUSTOM ||
+          billingCycleType === BillingCycleTypes.MILESTONE)
       ) {
         await reminder
           .related('invoiceRemindersCustomDates')
           .createMany(
-            custom_dates.map(({ date, milestone }) => ({ date, milestone }))
+            customDates.map(({ date, milestone }) => ({ date, milestone }))
           )
       }
     }

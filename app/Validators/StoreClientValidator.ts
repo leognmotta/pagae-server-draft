@@ -10,7 +10,7 @@ export default class StoreClientValidator {
       street: schema.string.optional(),
       unit: schema.string.optional(),
       city: schema.string.optional(),
-      postal_code: schema.string.optional(),
+      postalCode: schema.string.optional(),
       country: schema.string.optional(),
       state: schema.string.optional(),
     }),

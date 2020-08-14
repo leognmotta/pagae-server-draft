@@ -37,7 +37,7 @@ export default class BusinessesController {
   }
 
   public async store({ auth, request }: HttpContextContract) {
-    const { name, plan_id } = await request.validate(StoreBusinessValidator)
+    const { name, planId } = await request.validate(StoreBusinessValidator)
 
     if (!auth.user) {
       throw new AuthenticationException(
@@ -49,7 +49,7 @@ export default class BusinessesController {
     await new BusinessServices().store({
       freelancerId: auth.user.id,
       name,
-      planId: plan_id,
+      planId,
     })
   }
 

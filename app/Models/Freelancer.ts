@@ -1,21 +1,30 @@
 import Hash from '@ioc:Adonis/Core/Hash'
 import { DateTime } from 'luxon'
-import { BaseModel, column, beforeSave } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, beforeSave, computed } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Freelancer extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
+  @column({ serializeAs: null })
   public firstName: string
 
-  @column()
+  @column({ serializeAs: null })
   public lastName: string
+
+  @computed()
+  public get name() {
+    return {
+      firstName: this.firstName,
+      lastName: this.lastName,
+      displayName: `${this.firstName} ${this.lastName}`,
+    }
+  }
 
   @column()
   public email: string
 
-  @column()
+  @column({ serializeAs: 'isEmailConfirmed' })
   public isEmailConfirmed: boolean
 
   @column({ serializeAs: null })
@@ -24,10 +33,14 @@ export default class Freelancer extends BaseModel {
   @column({ serializeAs: null })
   public rememberMeToken: string
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: 'createdAt' })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serializeAs: 'updatedAt',
+  })
   public updatedAt: DateTime
 
   @beforeSave()

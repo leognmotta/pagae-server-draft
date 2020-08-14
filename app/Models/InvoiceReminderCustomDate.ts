@@ -5,7 +5,7 @@ export default class InvoiceReminderCustomDate extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
+  @column({ serializeAs: 'invoiceReminderId' })
   public invoiceReminderId: number
 
   @column()
@@ -14,9 +14,13 @@ export default class InvoiceReminderCustomDate extends BaseModel {
   @column.dateTime()
   public date: DateTime
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: 'createdAt' })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serializeAs: 'updatedAt',
+  })
   public updatedAt: DateTime
 }

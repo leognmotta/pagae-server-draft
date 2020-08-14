@@ -5,11 +5,7 @@
   "scripts": {
     "build": "node ace build",
     "start": "node ace serve --watch",
-    "lint": "eslint . --ext=.ts",
-    "make:model": "node ace make:model",
-    "make:controller": "node ace make:controller",
-    "make:migration": "node ace make:migration",
-    "migration:run": "node ace migration:run"
+    "lint": "eslint . --ext=.ts"
   },
   "dependencies": {
     "@adonisjs/ace": "^6.0.0",

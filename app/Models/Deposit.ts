@@ -12,15 +12,19 @@ export default class Deposit extends BaseModel {
   @column()
   public required: boolean
 
-  @column()
+  @column({ serializeAs: 'projectId' })
   public projectId: number
 
   @belongsTo(() => Project)
   public project: BelongsTo<typeof Project>
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: 'createdAt' })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serializeAs: 'updatedAt',
+  })
   public updatedAt: DateTime
 }

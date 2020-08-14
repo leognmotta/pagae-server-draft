@@ -245,11 +245,11 @@
     open "^7.0.3"
 
 "@adonisjs/validator@^7.4.0":
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/@adonisjs/validator/-/validator-7.4.0.tgz#9261d9def7f4ac79d9752d4cf0887448f1d031f6"
-  integrity sha512-DLj6AJze0fUwVNAnzKKgP35zR9G8gxtbddWqbBWjLzabxvKXQAtXHQ79fJ0n9e6JEq1tCRH9Iv/Xf0RdJ4P8Vg==
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/@adonisjs/validator/-/validator-7.4.1.tgz#9aa9f88eefbe342196e992a193a1c530d02e238a"
+  integrity sha512-1bMLxjIe+SVulSkO1912hhLiJBYt0RmHC1eEgADML1LSbCnGyjX60gtQLww5FCK/o9c4qHX/1cvom/12A4+BhA==
   dependencies:
-    "@poppinss/utils" "^2.5.1"
+    "@poppinss/utils" "^2.5.2"
     "@types/luxon" "^1.24.3"
     "@types/validator" "^13.1.0"
     luxon "^1.24.1"
@@ -385,9 +385,9 @@
     enquirer "^2.3.6"
 
 "@poppinss/utils@^2.2.6", "@poppinss/utils@^2.3.0", "@poppinss/utils@^2.5.0", "@poppinss/utils@^2.5.1", "@poppinss/utils@^2.5.2":
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/@poppinss/utils/-/utils-2.5.2.tgz#0ed740234cb82f62a7d14ceab39b17b5d520d76c"
-  integrity sha512-NrBtC977jTSyQdkH2YskEsUmJsu7rpZpCf+NZao6wkq/ANaydkVIFdYUmKGd2/K0xzZ/YZmZ+mUtI0m8VlaFFg==
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/@poppinss/utils/-/utils-2.5.3.tgz#741ebff4f7f31adf2ec1a43c51d65d154278ac37"
+  integrity sha512-sC/9sg4mU10UEANxJYaeySOpKhMWsPFkV5QtTMskG+rBJOXU9yPqHk8ibmnp4jysfWdbOPSv52I9C/VwKjfD5Q==
   dependencies:
     buffer-alloc "^1.2.0"
     fast-safe-stringify "^2.0.7"
@@ -2405,9 +2405,9 @@ kleur@^3.0.3:
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
 kleur@^4.0.2:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.0.3.tgz#c66f27b804dfb89f804de5f44290c9001979e685"
-  integrity sha512-s84+52u0qkMmOI+eFJSxOCS/2Xt4j2A7Uacg8j+Ja1uFrED2zV3bILKtdAmpJCER4ufTej7p1OwuHbUz5ZVUyg==
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.0.tgz#eea37aa8c210a06c42a591ee56a13f137a13add3"
+  integrity sha512-s9jD+1dPhJVOzEAGjuabDC1NJdNr1UGj84SftcGukJDpQaLbwuJTakb7FqAhm4cFkhaIvS2DV092FXMyUgPt+w==
 
 knex-dynamic-connection@^1.0.5:
   version "1.0.5"
@@ -2493,9 +2493,9 @@ lodash.toarray@^4.4.0:
   integrity sha1-JMS/zWsvuji/0FlNsRedjptlZWE=
 
 lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19:
-  version "4.17.19"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
-  integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
+  version "4.17.20"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
+  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
 
 lru-cache@^4.1.5:
   version "4.1.5"
@@ -3244,16 +3244,16 @@ pino-std-serializers@^2.4.2:
   integrity sha512-WaL504dO8eGs+vrK+j4BuQQq6GLKeCCcHaMB2ItygzVURcL1CycwNEUHTD/lHFHs/NL5qAz2UKrjYWXKSf4aMQ==
 
 pino@^6.4.0:
-  version "6.5.0"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-6.5.0.tgz#4d3447c0efa75489936c16071bd3abddbaac7e96"
-  integrity sha512-qDIFPZ2h2AMrp+JIWKFUtejiTv5F/+glbizrG9VNvegSCSK6sqnRmerNM9R98/x3RxwKkIf5kJ9q4chXdBdvJA==
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-6.5.1.tgz#a245adf960a1f3e88e61a339045d509bccbfb7cc"
+  integrity sha512-76+RUhQkqjUD4AtQcSfEzh6vlsjXmoWZK5gg+2d70aCLXZTbo4/5js4I9rN1Xk6z1h2/7pnOFX10G4c2T4qNiA==
   dependencies:
     fast-redact "^2.0.0"
     fast-safe-stringify "^2.0.7"
     flatstr "^1.0.12"
     pino-std-serializers "^2.4.2"
     quick-format-unescaped "^4.0.1"
-    sonic-boom "^1.0.0"
+    sonic-boom "^1.0.2"
 
 pluralize@^8.0.0:
   version "8.0.0"
@@ -3701,10 +3701,10 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-sonic-boom@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-1.0.2.tgz#8769646fac2ecb58bd0ed60562280aa4211598df"
-  integrity sha512-sRMmXu7uFDXoniGvtLHuQk5KWovLWoi6WKASn7rw0ro41mPf0fOolkGp4NE6680CbxvNh26zWNyFQYYWXe33EA==
+sonic-boom@^1.0.2:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-1.1.0.tgz#538c2de63aaca1b49254a7ed9d16e4931fab6ad3"
+  integrity sha512-JyOf+Xt7GBN4tAic/DD1Bitw6OMgSHAnswhPeOiLpfRoSjPNjEIi73UF3OxHzhSNn9WavxGuCZzprFCGFSNwog==
   dependencies:
     atomic-sleep "^1.0.0"
     flatstr "^1.0.12"

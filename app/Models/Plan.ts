@@ -16,7 +16,7 @@ export default class Plan extends BaseModel {
   @column()
   public description: string
 
-  @column()
+  @column({ serializeAs: 'durationDays' })
   public durationDays: number
 
   @column()
@@ -24,18 +24,22 @@ export default class Plan extends BaseModel {
 
   @column({
     serialize: (value) => ({
-      formatted_value: formatPrice(value),
-      raw_value: Number(value),
+      displayValue: formatPrice(value),
+      value: Number(value),
     }),
   })
   public price: number
 
-  @column()
+  @column({ serializeAs: 'isActive' })
   public isActive: boolean
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: 'createdAt' })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serializeAs: 'updatedAt',
+  })
   public updatedAt: DateTime
 }

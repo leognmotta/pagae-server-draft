@@ -32,13 +32,13 @@ export default class FreelancersController {
   }
 
   public async store({ request }: HttpContextContract) {
-    const { first_name, last_name, email, password } = await request.validate(
+    const { firstName, lastName, email, password } = await request.validate(
       StoreFreelancerValidator
     )
 
     await Freelancer.create({
-      firstName: first_name,
-      lastName: last_name,
+      firstName,
+      lastName,
       email,
       password,
     })
@@ -71,7 +71,7 @@ export default class FreelancersController {
 
   public async update({ auth, params, request }: HttpContextContract) {
     const { id } = params
-    const { email, first_name, last_name } = await request.validate(
+    const { email, firstName, lastName } = await request.validate(
       UpdateFreelancerValidator
     )
 
@@ -85,7 +85,7 @@ export default class FreelancersController {
       throw new EntityNotFoundException()
     }
 
-    Object.assign(freelancer, { first_name, last_name, email })
+    Object.assign(freelancer, { firstName, lastName, email })
 
     await freelancer.save()
   }

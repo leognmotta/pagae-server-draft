@@ -157,5 +157,3 @@ export enum CurrencyCode {
   ZMW = 'ZMW',
   ZWL = 'ZWL',
 }
-
-CurrencyCode.BRL

@@ -5,10 +5,10 @@ export default class Service extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
+  @column({ serializeAs: 'projectId' })
   public projectId: number
 
-  @column()
+  @column({ serializeAs: 'priceUnitId' })
   public priceUnitId: number
 
   @column()
@@ -23,9 +23,13 @@ export default class Service extends BaseModel {
   @column()
   public quantity: number
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: 'createdAt' })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serializeAs: 'updatedAt',
+  })
   public updatedAt: DateTime
 }

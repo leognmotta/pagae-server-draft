@@ -12,15 +12,15 @@ export default class StoreProjectValidator {
     return deposit ? BillingCycleTypes.ONCE_MORE : BillingCycleTypes.ONCE
   })()
 
-  private custom_date_rules = (() => {
-    const { invoice_reminder } = this.ctx.request.all()
+  private customDateRules = (() => {
+    const { invoiceReminder } = this.ctx.request.all()
 
-    if (invoice_reminder && invoice_reminder.billing_cycle_type) {
-      const { billing_cycle_type } = invoice_reminder
+    if (invoiceReminder && invoiceReminder.billingCycleType) {
+      const { billingCycleType } = invoiceReminder
 
       if (
-        billing_cycle_type === BillingCycleTypes.CUSTOM ||
-        billing_cycle_type === BillingCycleTypes.MILESTONE
+        billingCycleType === BillingCycleTypes.CUSTOM ||
+        billingCycleType === BillingCycleTypes.MILESTONE
       ) {
         return [rules.minLength(1), rules.required()]
       }
@@ -29,13 +29,13 @@ export default class StoreProjectValidator {
     return []
   })()
 
-  private milestone_name_rule = (() => {
-    const { invoice_reminder } = this.ctx.request.all()
+  private milestoneNameRule = (() => {
+    const { invoiceReminder } = this.ctx.request.all()
 
-    if (invoice_reminder && invoice_reminder.billing_cycle_type) {
-      const { billing_cycle_type } = invoice_reminder
+    if (invoiceReminder && invoiceReminder.billingCycleType) {
+      const { billingCycleType } = invoiceReminder
 
-      if (billing_cycle_type === BillingCycleTypes.MILESTONE) {
+      if (billingCycleType === BillingCycleTypes.MILESTONE) {
         return [rules.required()]
       }
     }
@@ -43,15 +43,15 @@ export default class StoreProjectValidator {
     return []
   })()
 
-  private first_invoice_reminder_rules = (() => {
-    const { invoice_reminder } = this.ctx.request.all()
+  private firstInvoiceReminderRules = (() => {
+    const { invoiceReminder } = this.ctx.request.all()
 
-    if (invoice_reminder && invoice_reminder.billing_cycle_type) {
-      const { billing_cycle_type } = invoice_reminder
+    if (invoiceReminder && invoiceReminder.billingCycleType) {
+      const { billingCycleType } = invoiceReminder
 
       if (
-        billing_cycle_type !== BillingCycleTypes.CUSTOM &&
-        billing_cycle_type !== BillingCycleTypes.MILESTONE
+        billingCycleType !== BillingCycleTypes.CUSTOM &&
+        billingCycleType !== BillingCycleTypes.MILESTONE
       ) {
         return [rules.after('today'), rules.required()]
       }
@@ -65,17 +65,19 @@ export default class StoreProjectValidator {
   })
 
   public schema = schema.create({
-    client_id: schema.number([
+    clientId: schema.number([
       rules.exists({
         table: 'clients',
         column: 'id',
-        where: { business_id: this.ctx.request.activeBusiness },
+        where: {
+          business_id: this.ctx.request.activeBusiness,
+        },
       }),
     ]),
 
     name: schema.string(),
-    start_time: schema.date.optional(),
-    end_time: schema.date.optional({}, [rules.afterField('start_time')]),
+    startTime: schema.date.optional(),
+    endTime: schema.date.optional({}, [rules.afterField('startTime')]),
     currency: schema.string.optional(),
 
     deposit: schema.object.optional().members({
@@ -83,22 +85,22 @@ export default class StoreProjectValidator {
       required: schema.boolean.optional(),
     }),
 
-    invoice_reminder: schema.object.optional().members({
-      billing_cycle_type: schema.number([
+    invoiceReminder: schema.object.optional().members({
+      billingCycleType: schema.number([
         rules.unsigned(),
         rules.range(this.minBillingTypeNumber, 6),
       ]),
-      first_invoice_reminder: schema.date.optional(
+      firstInvoiceReminder: schema.date.optional(
         {},
-        this.first_invoice_reminder_rules
+        this.firstInvoiceReminderRules
       ),
-      last_invoice_reminder: schema.date.optional({}, [
-        rules.afterField('first_invoice_reminder'),
+      lastInvoiceReminder: schema.date.optional({}, [
+        rules.afterField('firstInvoiceReminder'),
       ]),
-      custom_dates: schema.array.optional(this.custom_date_rules).members(
+      customDates: schema.array.optional(this.customDateRules).members(
         schema.object().members({
           date: schema.date({}, [rules.after('today')]),
-          milestone: schema.string.optional({}, this.milestone_name_rule),
+          milestone: schema.string.optional({}, this.milestoneNameRule),
         })
       ),
     }),
@@ -109,7 +111,7 @@ export default class StoreProjectValidator {
         description: schema.string.optional(),
         price: schema.number([rules.range(1, 999999999999999)]),
         quantity: schema.number([rules.range(1, 999999999999999)]),
-        price_unit_id: schema.number([
+        priceUnitId: schema.number([
           rules.exists({
             table: 'price_units',
             column: 'id',
@@ -120,7 +122,7 @@ export default class StoreProjectValidator {
   })
 
   public messages = {
-    'invoice_reminder.billing_cycle_type.range':
+    'invoiceReminder.billingCycleType.range':
       'If you require a deposit, you need at least one more invoice.',
   }
 }

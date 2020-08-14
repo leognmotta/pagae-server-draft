@@ -16,7 +16,7 @@ export default class Client extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
+  @column({ serializeAs: 'businessId' })
   public businessId: number
 
   @column()
@@ -34,12 +34,16 @@ export default class Client extends BaseModel {
   @hasMany(() => Project)
   public projects: HasMany<typeof Project>
 
-  @column()
+  @column({ serializeAs: 'isActive' })
   public isActive: boolean
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: 'createdAt' })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serializeAs: 'updatedAt',
+  })
   public updatedAt: DateTime
 }

@@ -105,12 +105,12 @@ export default class ClientsController {
         delete address.id
 
         await client.related('address').create({
-          postalCode: address.postal_code,
+          postalCode: address.postalCode,
           ...address,
         })
       } else {
         Object.assign(addressInstance, {
-          postalCode: address.postal_code,
+          postalCode: address.postalCode,
           ...address,
         })
 

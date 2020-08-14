@@ -19,7 +19,7 @@ export default class Business extends BaseModel {
   @column()
   public name: string
 
-  @column()
+  @column({ serializeAs: 'businessOwner' })
   public businessOwner: number
 
   @hasOne(() => Subscription)
@@ -31,12 +31,16 @@ export default class Business extends BaseModel {
   @manyToMany(() => Freelancer, { pivotTable: 'business_team_members' })
   public freelancers: ManyToMany<typeof Freelancer>
 
-  @column()
+  @column({ serializeAs: 'isActive' })
   public isActive: boolean
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: 'createdAt' })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serializeAs: 'updatedAt',
+  })
   public updatedAt: DateTime
 }

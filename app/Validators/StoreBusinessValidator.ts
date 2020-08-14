@@ -6,7 +6,7 @@ export default class StoreBusinessValidator {
 
   public schema = schema.create({
     name: schema.string(),
-    plan_id: schema.number.optional(),
+    planId: schema.number.optional(),
   })
 
   public cacheKey = this.ctx.routeKey

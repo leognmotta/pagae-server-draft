@@ -9,6 +9,7 @@ import EntityNotFoundException from 'App/Exceptions/EntityNotFoundException'
 import Client from 'App/Models/Client'
 import Project from 'App/Models/Project'
 import { BUSINESS_ID_COOKIE_KEY } from 'App/Utils/Constants/cookies'
+import Logger from '@ioc:Adonis/Core/Logger'
 
 class WithBusinessFk extends BaseModel {
   @column()

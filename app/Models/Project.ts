@@ -25,7 +25,7 @@ export default class Project extends BaseModel {
   @column()
   public currency: string
 
-  @column()
+  @column({ serializeAs: 'businessId' })
   public businessId: number
 
   @computed()
@@ -67,18 +67,22 @@ export default class Project extends BaseModel {
   @column()
   public status: number
 
-  @column.dateTime()
+  @column.dateTime({ serializeAs: 'startTime' })
   public startTime: DateTime
 
-  @column.dateTime()
+  @column.dateTime({ serializeAs: 'endTime' })
   public endTime: DateTime
 
-  @column()
+  @column({ serializeAs: 'isActive' })
   public isActive: boolean
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: 'createdAt' })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({
+    autoCreate: true,
+    autoUpdate: true,
+    serializeAs: 'updatedAt',
+  })
   public updatedAt: DateTime
 }
