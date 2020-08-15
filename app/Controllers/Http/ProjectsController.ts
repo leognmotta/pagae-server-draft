@@ -10,6 +10,7 @@ import { isBefore } from 'date-fns'
 import { DateTime } from 'luxon'
 import NoBusinessActiveException from 'App/Exceptions/NoBusinessActiveException'
 import EntityNotFoundException from 'App/Exceptions/EntityNotFoundException'
+import UpdateProjectValidator from 'App/Validators/UpdateProjectValidator'
 
 export default class ProjectsController {
   public async index({ request }: HttpContextContract) {
@@ -135,7 +136,165 @@ export default class ProjectsController {
     return project.toJSON()
   }
 
-  public async update(ctx: HttpContextContract) {}
+  public async update({ params, request }: HttpContextContract) {
+    const { id } = params
+    const {
+      name,
+      currency,
+      endTime,
+      startTime,
+      deposit,
+      services,
+      invoiceReminder,
+    } = await request.validate(UpdateProjectValidator)
 
-  public async destroy(ctx: HttpContextContract) {}
+    if (!request.activeBusiness) {
+      throw new NoBusinessActiveException()
+    }
+
+    const project = await Project.query()
+      .where('id', id)
+      .andWhere('business_id', request.activeBusiness)
+      .first()
+
+    if (!project) {
+      throw new EntityNotFoundException()
+    }
+
+    if (deposit) {
+      const depositInstance = await project
+        .related('deposit')
+        .query()
+        .andWhere('project_id', id)
+        .first()
+
+      if (depositInstance && depositInstance.id !== deposit.id) {
+        throw new EntityNotFoundException()
+      }
+
+      if (!depositInstance) {
+        delete deposit.id
+
+        await project.related('deposit').create(deposit)
+      } else {
+        Object.assign(depositInstance, { ...deposit })
+
+        await depositInstance.save()
+      }
+    }
+
+    if (invoiceReminder) {
+      const {
+        customDates,
+        billingCycleType,
+        firstInvoiceReminder,
+        id: reminderId,
+        lastInvoiceReminder,
+      } = invoiceReminder
+
+      let reminderInstance = await project
+        .related('reminder')
+        .query()
+        .andWhere('project_id', id)
+        .first()
+
+      if (reminderInstance && reminderInstance.id !== reminderId) {
+        throw new EntityNotFoundException()
+      }
+
+      if (!reminderInstance) {
+        reminderInstance = await project.related('reminder').create({
+          billingCycleType,
+          firstInvoiceReminder,
+          lastInvoiceReminder,
+        })
+      } else {
+        Object.assign(reminderInstance, { ...invoiceReminder })
+
+        await reminderInstance.save()
+      }
+
+      if (customDates) {
+        customDates.forEach(async ({ date, id: customDateId, milestone }) => {
+          if (reminderInstance) {
+            const instance = await reminderInstance
+              .related('invoiceRemindersCustomDates')
+              .query()
+              .where('id', customDateId)
+              .andWhere('invoice_reminder_id', reminderInstance.id)
+              .first()
+
+            if (!instance) {
+              await reminderInstance
+                .related('invoiceRemindersCustomDates')
+                .create({ date, milestone })
+            } else {
+              Object.assign(instance, { date, milestone })
+
+              await instance.save()
+            }
+          }
+        })
+      }
+    }
+
+    if (services) {
+      services.forEach(
+        async ({
+          id: serviceId,
+          description,
+          name,
+          price,
+          priceUnitId,
+          quantity,
+        }) => {
+          const instance = await project
+            .related('services')
+            .query()
+            .where('id', serviceId)
+            .andWhere('project_id', id)
+            .first()
+
+          if (!instance) {
+            await project
+              .related('services')
+              .create({ description, name, price, priceUnitId, quantity })
+          } else {
+            Object.assign(instance, {
+              description,
+              name,
+              price,
+              priceUnitId,
+              quantity,
+            })
+
+            await instance.save()
+          }
+        }
+      )
+    }
+
+    Object.assign(project, { name, currency, endTime, startTime })
+
+    await project.save()
+  }
+
+  public async destroy({ request, params }: HttpContextContract) {
+    const { id } = params
+
+    if (!request.activeBusiness) {
+      throw new NoBusinessActiveException()
+    }
+
+    const project = await Project.query()
+      .where('id', id)
+      .andWhere('business_id', request.activeBusiness)
+      .first()
+
+    if (!project) {
+      throw new EntityNotFoundException()
+    }
+
+    await project.delete()
+  }
 }

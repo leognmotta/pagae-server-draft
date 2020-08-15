@@ -1,10 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
-
-const { format: formatPrice } = new Intl.NumberFormat('pt-BR', {
-  style: 'currency',
-  currency: 'BRL',
-})
+import formatCurrency from 'App/Utils/formatCurrency'
 
 export default class Plan extends BaseModel {
   @column({ isPrimary: true })
@@ -24,8 +20,9 @@ export default class Plan extends BaseModel {
 
   @column({
     serialize: (value) => ({
-      displayValue: formatPrice(value),
+      displayValue: formatCurrency('pt_BR', 'BRL').format(value),
       value: Number(value),
+      currency: 'BRL',
     }),
   })
   public price: number

@@ -14,6 +14,8 @@ import Client from './Client'
 import InvoiceReminder from './InvoiceReminder'
 import Deposit from './Deposit'
 import Service from './Service'
+import formatCurrency from 'App/Utils/formatCurrency'
+import { PriceUnit } from 'App/Utils/enums'
 
 export default class Project extends BaseModel {
   @column({ isPrimary: true })
@@ -34,18 +36,22 @@ export default class Project extends BaseModel {
       return {}
     }
 
-    return {
-      total: Number(
-        this.services
-          .reduce((a, { price, priceUnitId, quantity }) => {
-            if (priceUnitId === 1) {
-              return a + price
-            }
+    const total = Number(
+      this.services
+        .reduce((a, { price, priceUnitId, quantity }) => {
+          if (priceUnitId === PriceUnit.FLAT_FEE) {
+            return a + price
+          }
 
-            return a + price * quantity
-          }, 0)
-          .toFixed(2)
-      ),
+          return a + price * quantity
+        }, 0)
+        .toFixed(2)
+    )
+
+    return {
+      total,
+      displayTotal: formatCurrency('pt_BR', 'BRL').format(total),
+      currency: 'BRL',
     }
   }
 
