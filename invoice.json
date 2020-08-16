@@ -1,146 +1,30 @@
 {
   "invoice": {
-    "date": "2020-08-12",
+    "date": "2020-08-15",
     "number": "2",
     "currency": "BRL",
     "client": {
-      "id": 480757,
-      "status": 0,
-      "companyName": "yrdyr",
-      "address": {
-        "id": 723183,
-        "addressType": 1,
-        "firstLine": "Setor G Norte Cng 7 Ae Cng 7",
-        "secondLine": "Lote 1 Loja 1",
-        "city": "",
-        "state": "DF",
-        "postalCode": "72130-075"
-      },
-      "isActive": true,
-      "contacts": [
-        { "id": 535742, "name": "teste", "contactInfos": [] },
-        {
-          "id": 536087,
-          "name": "Leo",
-          "contactInfos": [
-            {
-              "id": 2622907,
-              "contactInfoType": 0,
-              "address": "leo@domboscoatacado.com.br"
-            }
-          ]
-        }
-      ],
-      "taxDefinition": {
-        "id": 524716,
-        "name": "",
-        "entries": [],
-        "totalTaxPercentage": 0,
-        "totalTaxFixed": 0,
-        "identificationNumber": ""
-      },
-      "lastEmailSentDate": "2020-08-12T23:44:42.000Z"
+      "id": 480070
     },
     "project": {
-      "id": 480587,
-      "createdDate": "2020-08-12T23:47:43.000Z",
-      "modifiedDate": "2020-08-12T23:47:43.000Z",
-      "projectType": 0,
-      "name": "test",
-      "currency": "BRL",
-      "status": 0,
-      "paymentTermsType": 0,
-      "client": { "id": 480757, "companyName": "yrdyr", "status": 0 },
-      "billingTerms": [
-        {
-          "id": 1530760,
-          "serviceType": 2,
-          "name": "5",
-          "quantity": 1,
-          "rate": 43434,
-          "rateType": 0,
-          "status": 1,
-          "projectId": 480587,
-          "customRateTypeLabel": ""
-        }
-      ],
-      "balance": { "totalValue": 43434 },
-      "startDate": "2020-08-13",
-      "endDate": "2020-08-20",
-      "reminder": { "billingCycleType": 0, "invoiceReminderEnabled": true },
-      "options": {},
-      "secondsTrackedTotal": 0,
-      "secondsTrackedBillingCycle": 0,
-      "terms": [
-        {
-          "id": 1530760,
-          "serviceType": 2,
-          "name": "5",
-          "quantity": 1,
-          "rate": 43434,
-          "rateType": 0,
-          "status": 1,
-          "projectId": 480587
-        }
-      ]
+      "id": 481442
     },
-    "projects": [
-      {
-        "id": 480587,
-        "createdDate": "2020-08-12T23:47:43.000Z",
-        "modifiedDate": "2020-08-12T23:47:43.000Z",
-        "projectType": 0,
-        "name": "test",
-        "currency": "BRL",
-        "status": 0,
-        "paymentTermsType": 0,
-        "client": { "id": 480757, "companyName": "yrdyr", "status": 0 },
-        "billingTerms": [
-          {
-            "id": 1530760,
-            "serviceType": 2,
-            "name": "5",
-            "quantity": 1,
-            "rate": 43434,
-            "rateType": 0,
-            "status": 1,
-            "projectId": 480587
-          }
-        ],
-        "balance": { "totalValue": 43434 },
-        "startDate": "2020-08-13",
-        "endDate": "2020-08-20",
-        "reminder": { "billingCycleType": 0, "invoiceReminderEnabled": true },
-        "options": {},
-        "secondsTrackedTotal": 0,
-        "secondsTrackedBillingCycle": 0
-      }
-    ],
     "paymentTermsType": 2,
     "items": [
       {
         "billTrackedHours": false,
-        "billingTermId": 1530760,
+        "billingTermId": 1538195,
         "currency": "BRL",
-        "details": "5",
+        "details": "er",
         "quantity": 1,
-        "rate": 43434,
+        "rate": 34,
         "rateType": 0
       }
     ],
-    "attachments": [],
-    "options": {
-      "groupBy": 0,
-      "showPayMeButton": true,
-      "locale": "en_US",
-      "language": "en",
-      "taxLabel": "Tax",
-      "projectName": "test"
-    },
+
     "paymentTermsValue": null,
     "attachmentIds": [],
     "paidAmount": 0,
-    "projectId": 480587,
-    "batchId": 218
+    "projectId": 481442
   }
 }

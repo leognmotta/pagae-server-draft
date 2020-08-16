@@ -6,16 +6,13 @@ import {
   BelongsTo,
   hasOne,
   HasOne,
-  hasMany,
-  HasMany,
-  computed,
+  manyToMany,
+  ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import Client from './Client'
 import InvoiceReminder from './InvoiceReminder'
 import Deposit from './Deposit'
 import Service from './Service'
-import formatCurrency from 'App/Utils/formatCurrency'
-import { PriceUnit } from 'App/Utils/enums'
 
 export default class Project extends BaseModel {
   @column({ isPrimary: true })
@@ -30,39 +27,14 @@ export default class Project extends BaseModel {
   @column({ serializeAs: 'businessId' })
   public businessId: number
 
-  @computed()
-  public get balance() {
-    if (!this.services) {
-      return {}
-    }
-
-    const total = Number(
-      this.services
-        .reduce((a, { price, priceUnitId, quantity }) => {
-          if (priceUnitId === PriceUnit.FLAT_FEE) {
-            return a + price
-          }
-
-          return a + price * quantity
-        }, 0)
-        .toFixed(2)
-    )
-
-    return {
-      total,
-      displayTotal: formatCurrency('pt_BR', 'BRL').format(total),
-      currency: 'BRL',
-    }
-  }
-
   @hasOne(() => InvoiceReminder)
   public reminder: HasOne<typeof InvoiceReminder>
 
   @hasOne(() => Deposit)
   public deposit: HasOne<typeof Deposit>
 
-  @hasMany(() => Service)
-  public services: HasMany<typeof Service>
+  @manyToMany(() => Service, { pivotTable: 'project_services' })
+  public services: ManyToMany<typeof Service>
 
   @column({ serializeAs: null })
   public clientId: number
