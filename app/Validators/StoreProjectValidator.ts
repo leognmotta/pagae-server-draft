@@ -65,27 +65,28 @@ export default class StoreProjectValidator {
   })
 
   public schema = schema.create({
-    clientId: schema.number([
-      rules.exists({
-        table: 'clients',
-        column: 'id',
-        where: {
-          business_id: this.ctx.request.activeBusiness,
-        },
+    project: schema.object().members({
+      name: schema.string(),
+      startTime: schema.date.optional(),
+      endTime: schema.date.optional({}, [rules.afterField('startTime')]),
+      currency: schema.string.optional(),
+      clientId: schema.number([
+        rules.exists({
+          table: 'clients',
+          column: 'id',
+          where: {
+            business_id: this.ctx.request.activeBusiness,
+          },
+        }),
+      ]),
+
+      deposit: schema.object.optional().members({
+        value: schema.number(),
+        required: schema.boolean.optional(),
       }),
-    ]),
-
-    name: schema.string(),
-    startTime: schema.date.optional(),
-    endTime: schema.date.optional({}, [rules.afterField('startTime')]),
-    currency: schema.string.optional(),
-
-    deposit: schema.object.optional().members({
-      value: schema.number(),
-      required: schema.boolean.optional(),
     }),
 
-    invoiceReminder: schema.object.optional().members({
+    reminder: schema.object.optional().members({
       billingCycleType: schema.number([
         rules.unsigned(),
         rules.range(this.minBillingTypeNumber, 6),
@@ -107,16 +108,21 @@ export default class StoreProjectValidator {
 
     services: schema.array.optional([rules.minLength(1)]).members(
       schema.object().members({
-        name: schema.string(),
-        description: schema.string.optional(),
-        price: schema.number([rules.range(1, 999999999999999)]),
-        quantity: schema.number([rules.range(1, 999999999999999)]),
-        priceUnitId: schema.number([
-          rules.exists({
-            table: 'price_units',
-            column: 'id',
-          }),
-        ]),
+        service: schema.object().members({
+          name: schema.string(),
+        }),
+
+        term: schema.object().members({
+          description: schema.string.optional(),
+          price: schema.number([rules.range(1, 999999999999999)]),
+          quantity: schema.number([rules.range(1, 999999999999999)]),
+          priceUnitId: schema.number([
+            rules.exists({
+              table: 'price_units',
+              column: 'id',
+            }),
+          ]),
+        }),
       })
     ),
   })

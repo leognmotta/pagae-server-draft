@@ -20,7 +20,7 @@ export default class ProjectServices extends BaseSchema {
         .unsigned()
         .onDelete('CASCADE')
         .notNullable()
-      table.timestamps(true)
+      table.timestamps(true, true)
     })
   }
 

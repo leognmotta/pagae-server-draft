@@ -1,19 +1,15 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasOne, HasOne } from '@ioc:Adonis/Lucid/Orm'
-import Term from './Term'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
-export default class Service extends BaseModel {
+export default class Projectservice extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column({ serializeAs: null })
-  public businessId: number
+  @column({ serializeAs: 'projectId' })
+  public projectId: number
 
-  @column()
-  public name: string
-
-  @hasOne(() => Term)
-  public term: HasOne<typeof Term>
+  @column({ serializeAs: 'serviceId' })
+  public serviceId: number
 
   @column.dateTime({ autoCreate: true, serializeAs: 'createdAt' })
   public createdAt: DateTime
